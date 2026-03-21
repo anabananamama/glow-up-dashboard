@@ -807,6 +807,10 @@ main { padding-top: 52px; }
           <div style="font-size:12px;color:var(--ink3);margin-bottom:4px">Oura Token</div>
           <input id="s-oura" type="password" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:'Jost',sans-serif;font-size:13px;outline:none;background:var(--bg);color:var(--ink)" placeholder="Oura personal access token">
         </div>
+        <div>
+          <div style="font-size:12px;color:var(--ink3);margin-bottom:4px">Apps Script URL (for weight sync)</div>
+          <input id="s-apps-script" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:'Jost',sans-serif;font-size:13px;outline:none;background:var(--bg);color:var(--ink)" placeholder="https://script.google.com/macros/s/...">
+        </div>
       </div>
     </div>
     <div class="card">
@@ -838,6 +842,7 @@ const CFG = {
   SHEET_ID: '',
   API_KEY: '',
   OURA_TOKEN: '',
+  APPS_SCRIPT_URL: '',
   SPRINT_START: new Date('2025-03-24'), // Monday
   WEIGHT_GOAL: 0,
 };
@@ -981,6 +986,7 @@ const loadCfg = () => {
   if(s.SHEET_ID) CFG.SHEET_ID = s.SHEET_ID;
   if(s.API_KEY)  CFG.API_KEY  = s.API_KEY;
   if(s.OURA_TOKEN) CFG.OURA_TOKEN = s.OURA_TOKEN;
+  if(s.APPS_SCRIPT_URL) CFG.APPS_SCRIPT_URL = s.APPS_SCRIPT_URL;
   if(s.WEIGHT_GOAL) CFG.WEIGHT_GOAL = s.WEIGHT_GOAL;
   if(s.SPRINT_START) CFG.SPRINT_START = new Date(s.SPRINT_START);
 };
@@ -1343,12 +1349,36 @@ const fetchOura = async () => {
 // ═══════════════════════════════════════════════
 // WEIGHT
 // ═══════════════════════════════════════════════
-const updateWeight = () => {
-  const log  = lsGet('weight_log',[]);
-  const goal = CFG.WEIGHT_GOAL;
+const updateWeight = async () => {
+  // Try fetching from Apps Script first
+  if(CFG.APPS_SCRIPT_URL) {
+    try {
+      const r = await fetch(CFG.APPS_SCRIPT_URL);
+      if(r.ok) {
+        const data = await r.json();
+        if(data.weight) {
+          const w = parseFloat(data.weight).toFixed(1);
+          const d = data.date;
+          const isToday = d === todayStr();
+          document.getElementById('oura-weight').textContent = w;
+          document.getElementById('oura-weight-lbl').textContent = isToday ? 'weight today' : `weight · ${fmtDate(d)}`;
+          // Update progress bar if goal set
+          if(CFG.WEIGHT_GOAL) {
+            const start = lsGet('start_weight', parseFloat(w));
+            if(!lsGet('start_weight', null)) lsSet('start_weight', parseFloat(w));
+            const total = start - CFG.WEIGHT_GOAL;
+            const lost  = start - parseFloat(w);
+            const pct   = total > 0 ? Math.min(100, Math.round((lost/total)*100)) : 0;
+          }
+          return;
+        }
+      }
+    } catch(e) { console.log('Weight fetch error', e); }
+  }
+  // Fallback to localStorage
+  const log = lsGet('weight_log',[]);
   const latest = log.length ? log[log.length-1] : null;
-
-  if(latest){
+  if(latest) {
     document.getElementById('oura-weight').textContent = latest.w;
     const isToday = latest.date === todayStr();
     document.getElementById('oura-weight-lbl').textContent = isToday ? 'weight today' : `weight · ${fmtDate(latest.date)}`;
@@ -1621,18 +1651,21 @@ const loadSettings = () => {
   document.getElementById('s-sheet-id').value    = CFG.SHEET_ID||'';
   document.getElementById('s-api-key').value     = CFG.API_KEY||'';
   document.getElementById('s-oura').value        = CFG.OURA_TOKEN||'';
+  document.getElementById('s-apps-script').value = CFG.APPS_SCRIPT_URL||'';
   document.getElementById('s-weight-goal').value = CFG.WEIGHT_GOAL||'';
   document.getElementById('s-sprint-start').value= CFG.SPRINT_START.toISOString().split('T')[0];
 };
 
 const saveSettings = () => {
-  CFG.SHEET_ID     = document.getElementById('s-sheet-id').value.trim();
-  CFG.API_KEY      = document.getElementById('s-api-key').value.trim();
-  CFG.OURA_TOKEN   = document.getElementById('s-oura').value.trim();
-  CFG.WEIGHT_GOAL  = parseFloat(document.getElementById('s-weight-goal').value)||0;
-  CFG.SPRINT_START = new Date(document.getElementById('s-sprint-start').value);
+  CFG.SHEET_ID        = document.getElementById('s-sheet-id').value.trim();
+  CFG.API_KEY         = document.getElementById('s-api-key').value.trim();
+  CFG.OURA_TOKEN      = document.getElementById('s-oura').value.trim();
+  CFG.APPS_SCRIPT_URL = document.getElementById('s-apps-script').value.trim();
+  CFG.WEIGHT_GOAL     = parseFloat(document.getElementById('s-weight-goal').value)||0;
+  CFG.SPRINT_START    = new Date(document.getElementById('s-sprint-start').value);
   lsSet('config',{
     SHEET_ID: CFG.SHEET_ID, API_KEY: CFG.API_KEY, OURA_TOKEN: CFG.OURA_TOKEN,
+    APPS_SCRIPT_URL: CFG.APPS_SCRIPT_URL,
     WEIGHT_GOAL: CFG.WEIGHT_GOAL, SPRINT_START: CFG.SPRINT_START.toISOString(),
   });
   document.getElementById('settings-msg').textContent='Settings saved ✓';
