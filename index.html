@@ -1350,7 +1350,6 @@ const fetchOura = async () => {
 // WEIGHT
 // ═══════════════════════════════════════════════
 const updateWeight = async () => {
-  // Try fetching from Apps Script first
   if(CFG.APPS_SCRIPT_URL) {
     try {
       const r = await fetch(CFG.APPS_SCRIPT_URL);
@@ -1358,24 +1357,26 @@ const updateWeight = async () => {
         const data = await r.json();
         if(data.weight) {
           const w = parseFloat(data.weight).toFixed(1);
-          const d = data.date;
-          const isToday = d === todayStr();
+          // Handle "Mar 21, 2026 at 16:01" format from Google Sheets
+          let dateLabel = 'recently';
+          try {
+            const cleaned = String(data.date).replace(' at ', ' ');
+            const d = new Date(cleaned);
+            if(!isNaN(d.getTime())) {
+              const today = new Date();
+              const isToday = d.getFullYear()===today.getFullYear() &&
+                              d.getMonth()===today.getMonth() &&
+                              d.getDate()===today.getDate();
+              dateLabel = isToday ? 'today' : d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+            }
+          } catch(err) {}
           document.getElementById('oura-weight').textContent = w;
-          document.getElementById('oura-weight-lbl').textContent = isToday ? 'weight today' : `weight · ${fmtDate(d)}`;
-          // Update progress bar if goal set
-          if(CFG.WEIGHT_GOAL) {
-            const start = lsGet('start_weight', parseFloat(w));
-            if(!lsGet('start_weight', null)) lsSet('start_weight', parseFloat(w));
-            const total = start - CFG.WEIGHT_GOAL;
-            const lost  = start - parseFloat(w);
-            const pct   = total > 0 ? Math.min(100, Math.round((lost/total)*100)) : 0;
-          }
+          document.getElementById('oura-weight-lbl').textContent = `weight · ${dateLabel}`;
           return;
         }
       }
     } catch(e) { console.log('Weight fetch error', e); }
   }
-  // Fallback to localStorage
   const log = lsGet('weight_log',[]);
   const latest = log.length ? log[log.length-1] : null;
   if(latest) {
