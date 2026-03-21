@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glow Up Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F3EE;
+  --surface: #FFFFFF;
+  --surface2: #FAF7F3;
+  --border: #E8E0D6;
+  --border2: #F0EAE2;
+  --ink: #2C2520;
+  --ink2: #6B5E56;
+  --ink3: #A8998F;
+  --ink4: #C8BAB2;
+
+  --rose: #C8837A;
+  --rose-bg: #F5EAE8;
+  --sage: #7A9E8A;
+  --sage-bg: #EAF2EC;
+  --sand: #C4A882;
+  --sand-bg: #F5EFE6;
+  --dusty: #9B8BA8;
+  --dusty-bg: #F0ECF5;
+  --terracotta: #B87A5A;
+  --terra-bg: #F5EDE7;
+  --slate: #7A8EA8;
+  --slate-bg: #EAF0F5;
+  --moss: #8A9E7A;
+  --moss-bg: #EEF3EA;
+
+  --fitness: var(--rose);
+  --fitness-bg: var(--rose-bg);
+  --glowup: var(--sand);
+  --glowup-bg: var(--sand-bg);
+  --money: var(--sage);
+  --money-bg: var(--sage-bg);
+  --work: var(--slate);
+  --work-bg: var(--slate-bg);
+  --tiktok: var(--dusty);
+  --tiktok-bg: var(--dusty-bg);
+  --rels: var(--terracotta);
+  --rels-bg: var(--terra-bg);
+  --admin: var(--moss);
+  --admin-bg: var(--moss-bg);
+
+  --pistachio: #8FAF8A;
+  --pistachio-dark: #6E8F69;
+  --pistachio-bg: #E8F0E6;
+  --pistachio-text: #FFFFFF;
+
+  --r: 10px;
+  --r-sm: 7px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; }
+
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:200;
+  height: 52px;
+  background: rgba(247,243,238,0.96);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 2rem;
+  gap: 0;
+}
+
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--ink);
+  margin-right: 2rem;
+  white-space: nowrap;
+}
+
+.nav-tabs { display:flex; gap:0; flex:1; }
+
+.nav-tab {
+  padding: 0 1.25rem;
+  height: 52px;
+  display: flex; align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.nav-tab:hover { color: var(--ink); }
+.nav-tab.active { color: var(--ink); border-bottom-color: var(--rose); }
+
+.nav-date {
+  font-size: 12px;
+  color: var(--ink3);
+  font-weight: 300;
+  white-space: nowrap;
+}
+
+/* ── LAYOUT ── */
+main { padding-top: 52px; }
+.view { display:none; padding: 1.75rem 2rem; max-width: 1200px; margin: 0 auto; }
+.view.active { display:block; }
+
+/* ── TYPOGRAPHY ── */
+.serif { font-family: 'Playfair Display', serif; }
+.page-title { font-family:'Playfair Display',serif; font-size:26px; font-weight:400; color:var(--ink); }
+.section-label {
+  font-size: 10px; font-weight:500; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--ink3);
+  margin-bottom: 10px;
+}
+
+/* ── CARDS ── */
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:1.25rem; }
+.card-flush { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); overflow:hidden; }
+
+/* ── VISION BOARD ── */
+.vision-board {
+  border: 1.5px dashed var(--border);
+  border-radius: var(--r);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background: var(--surface2);
+}
+
+.vision-board-inner {
+  display: flex; gap: 8px; align-items: stretch;
+  min-height: 120px;
+}
+
+.vision-slot {
+  flex: 1; min-width: 80px;
+  border-radius: var(--r-sm);
+  border: 1.5px dashed var(--border);
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.15s;
+  min-height: 110px;
+}
+
+.vision-slot:hover { border-color: var(--ink3); }
+
+.vision-slot img {
+  width:100%; height:100%;
+  object-fit: cover;
+  position:absolute; inset:0;
+}
+
+.vision-slot .slot-placeholder {
+  display: flex; flex-direction:column; align-items:center; gap:4px;
+  pointer-events: none;
+}
+
+.vision-slot .slot-placeholder span { font-size:20px; opacity:0.3; }
+.vision-slot .slot-placeholder p { font-size:10px; color:var(--ink4); letter-spacing:0.05em; }
+
+.vision-slot .remove-photo {
+  position:absolute; top:4px; right:4px;
+  width:18px; height:18px;
+  background:rgba(0,0,0,0.5); color:white;
+  border-radius:50%; font-size:10px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; z-index:2;
+  opacity:0;
+  transition: opacity 0.15s;
+}
+.vision-slot:hover .remove-photo { opacity:1; }
+
+/* ── OURA STRIP ── */
+.oura-row {
+  display: flex; gap: 10px;
+  margin-bottom: 1.25rem;
+}
+
+.oura-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 40px;
+  padding: 6px 14px 6px 10px;
+}
+
+.oura-pill .icon { font-size:15px; }
+.oura-pill .val { font-family:'Playfair Display',serif; font-size:17px; font-weight:400; line-height:1; }
+.oura-pill .lbl { font-size:11px; color:var(--ink3); }
+.score-good { color: var(--sage); }
+.score-mid { color: var(--sand); }
+.score-low { color: var(--rose); }
+
+/* ── SPRINT BANNER ── */
+.sprint-banner {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--pistachio);
+  border-radius: var(--r);
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.25rem;
+  color: white;
+}
+
+.sprint-banner-left h2 {
+  font-family:'Playfair Display',serif; font-size:20px; font-weight:400;
+  color:white; line-height:1.2;
+}
+.sprint-banner-left p { font-size:11px; color:rgba(255,255,255,0.65); letter-spacing:0.06em; text-transform:uppercase; margin-top:3px; }
+
+.sprint-days-ring { position:relative; width:60px; height:60px; flex-shrink:0; }
+.sprint-days-ring svg { transform:rotate(-90deg); }
+.sprint-days-ring .ring-inner {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.ring-inner .rnum { font-size:18px; font-weight:500; color:white; line-height:1; }
+.ring-inner .rlbl { font-size:8px; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:0.05em; }
+
+.sprint-stats { display:flex; gap:1.5rem; }
+.sstat .snum { font-family:'Playfair Display',serif; font-size:24px; color:rgba(255,255,255,0.9); line-height:1; }
+.sstat .slbl { font-size:10px; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:0.05em; margin-top:2px; }
+
+/* ── HABIT GROUPS ── */
+.habits-2col { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.25rem; }
+
+.habit-group {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  overflow:hidden;
+}
+
+.habit-group-head {
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 0.75rem 1rem 0.625rem;
+  border-bottom: 1px solid var(--border2);
+}
+
+.hg-name {
+  display:flex; align-items:center; gap:7px;
+  font-size:11px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase;
+}
+
+.hg-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.hg-count { font-size:11px; color:var(--ink3); }
+
+.habit-rows { padding:4px 0; }
+
+.habit-row {
+  display:flex; align-items:center; gap:10px;
+  padding: 7px 1rem;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.habit-row:hover { background: var(--bg); }
+
+.hcheck {
+  width:19px; height:19px; border-radius:5px;
+  border: 1.5px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; font-size:10px; color:white;
+  transition: all 0.18s;
+}
+
+.habit-row.done .hcheck { border-color:transparent; background:var(--ink); }
+.habit-row.done .hname { color:var(--ink3); text-decoration:line-through; text-decoration-color:var(--border); }
+
+.hname { font-size:13px; color:var(--ink2); flex:1; }
+.hnote { font-size:11px; color:var(--ink4); }
+
+/* ── SPRINT TASKS ── */
+.sprint-tasks-section { margin-bottom:1.25rem; }
+
+.task-group {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  overflow:hidden;
+  margin-bottom:8px;
+}
+
+.task-group-head {
+  display:flex; align-items:center; gap:8px;
+  padding:0.625rem 1rem;
+  border-bottom:1px solid var(--border2);
+  background: var(--surface2);
+}
+
+.tg-label { font-size:11px; font-weight:500; letter-spacing:0.07em; text-transform:uppercase; color:var(--ink2); }
+.tg-sub { font-size:11px; color:var(--ink3); margin-left:auto; }
+
+.task-rows { padding:2px 0; }
+
+.task-row {
+  display:flex; align-items:center; gap:10px;
+  padding: 8px 1rem;
+  transition: background 0.12s;
+}
+
+.task-row.done { opacity:0.55; }
+.task-row.done .tname { text-decoration:line-through; color:var(--ink3); }
+
+.tcheck {
+  width:17px; height:17px; border-radius:4px;
+  border:1.5px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; font-size:9px; color:white; cursor:pointer;
+  transition: all 0.18s;
+}
+.task-row.done .tcheck { background:var(--sage); border-color:transparent; }
+
+.tname { font-size:13px; color:var(--ink2); flex:1; }
+.tarea-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.tdue { font-size:11px; color:var(--ink3); white-space:nowrap; }
+.tremove { font-size:13px; color:var(--ink4); cursor:pointer; padding:0 2px; opacity:0; transition:opacity 0.12s; }
+.task-row:hover .tremove { opacity:1; }
+
+.add-task-row {
+  display:flex; align-items:center; gap:8px;
+  padding:7px 1rem;
+  border-top:1px solid var(--border2);
+}
+
+.add-task-input {
+  flex:1; border:none; outline:none;
+  font-family:'Jost',sans-serif; font-size:13px;
+  color:var(--ink); background:transparent;
+}
+.add-task-input::placeholder { color:var(--ink4); }
+
+.add-task-btn {
+  font-size:18px; color:var(--ink3); cursor:pointer; line-height:1;
+  transition:color 0.12s;
+}
+.add-task-btn:hover { color:var(--ink); }
+
+/* ── SPRINT VIEW ── */
+.sprint-mode-toggle {
+  display:flex; gap:4px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:4px;
+  margin-bottom:1.5rem;
+  width:fit-content;
+}
+
+.sprint-mode-btn {
+  padding:7px 20px;
+  border-radius:var(--r-sm);
+  font-size:12px; font-weight:500;
+  letter-spacing:0.05em; text-transform:uppercase;
+  cursor:pointer; transition:all 0.18s;
+  color:var(--ink3);
+}
+.sprint-mode-btn.active { background:var(--ink); color:white; }
+
+/* PLAN MODE */
+.plan-area-block { margin-bottom:1.5rem; }
+
+.plan-area-head {
+  display:flex; align-items:center; gap:8px;
+  margin-bottom:0.75rem;
+}
+
+.plan-area-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+
+.plan-area-name {
+  font-family:'Playfair Display',serif; font-size:19px; font-weight:400;
+}
+
+.plan-area-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); overflow:hidden;
+}
+
+.plan-pool { padding:0.75rem 1rem; border-bottom:1px solid var(--border2); }
+.plan-pool-label { font-size:10px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink3); margin-bottom:6px; }
+
+.pool-item {
+  display:flex; align-items:center; gap:8px;
+  padding:5px 0;
+  font-size:13px; color:var(--ink2);
+  border-bottom:1px solid var(--border2);
+}
+.pool-item:last-child { border-bottom:none; }
+
+.pool-add-btn {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:11px; color:var(--ink3);
+  background:var(--bg); border:1px solid var(--border);
+  border-radius:20px; padding:3px 10px;
+  cursor:pointer; transition:all 0.15s; flex-shrink:0;
+}
+.pool-add-btn:hover { background:var(--border2); color:var(--ink); }
+.pool-add-btn.added { background:var(--sage-bg); color:var(--sage); border-color:var(--sage); }
+
+.plan-scheduled { padding:0.75rem 1rem; }
+.plan-scheduled-label { font-size:10px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink3); margin-bottom:6px; }
+
+.sched-item {
+  display:flex; align-items:center; gap:8px;
+  padding:5px 0;
+  border-bottom:1px solid var(--border2);
+}
+.sched-item:last-child { border-bottom:none; }
+.sched-name { font-size:13px; color:var(--ink2); flex:1; }
+.sched-due-input {
+  border:1px solid var(--border); border-radius:5px;
+  padding:2px 8px; font-size:11px; font-family:'Jost',sans-serif;
+  color:var(--ink2); background:var(--bg); outline:none; width:120px;
+}
+.sched-remove { font-size:13px; color:var(--ink4); cursor:pointer; }
+
+.plan-add-new {
+  display:flex; align-items:center; gap:8px;
+  padding:7px 1rem;
+  border-top:1px solid var(--border2);
+}
+.plan-add-input {
+  flex:1; border:none; outline:none;
+  font-family:'Jost',sans-serif; font-size:13px;
+  color:var(--ink); background:transparent;
+}
+.plan-add-input::placeholder { color:var(--ink4); }
+
+/* RETRO MODE */
+.retro-section { max-width:800px; }
+
+.retro-sprint-banner {
+  background: var(--pistachio); border-radius:var(--r);
+  padding:1.25rem 1.5rem;
+  margin-bottom:1.5rem;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.retro-sprint-banner h3 { font-family:'Playfair Display',serif; font-size:22px; font-weight:400; color:white; }
+.retro-sprint-banner p { font-size:11px; color:rgba(255,255,255,0.65); margin-top:2px; }
+.retro-pct { font-family:'Playfair Display',serif; font-size:36px; color:white; line-height:1; }
+
+.retro-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem; }
+
+.retro-habit-row {
+  display:flex; align-items:center; gap:8px;
+  padding:6px 0;
+  border-bottom:1px solid var(--border2);
+  font-size:13px;
+}
+.retro-habit-row:last-child { border-bottom:none; }
+.retro-pct-bar { flex:1; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+.retro-pct-fill { height:100%; border-radius:2px; background:var(--sage); }
+.retro-pct-num { font-size:12px; color:var(--ink3); min-width:32px; text-align:right; }
+
+.retro-task-row {
+  display:flex; align-items:center; gap:8px;
+  padding:6px 0; font-size:13px;
+  border-bottom:1px solid var(--border2);
+  color:var(--ink2);
+}
+.retro-task-row:last-child { border-bottom:none; }
+.retro-check { width:16px; height:16px; border-radius:4px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:9px; }
+.retro-check.yes { background:var(--sage); color:white; }
+.retro-check.no { background:var(--border); color:var(--ink4); }
+
+.retro-notes {
+  width:100%; border:1px solid var(--border); border-radius:var(--r-sm);
+  padding:0.875rem 1rem; font-family:'Jost',sans-serif; font-size:13px;
+  color:var(--ink); background:var(--bg); outline:none; resize:vertical; min-height:80px;
+  line-height:1.7;
+}
+
+/* BIG PICTURE */
+.quarter-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
+
+.qcard {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); overflow:hidden;
+}
+.qcard.current { border-color:var(--rose); }
+
+.qcard-head {
+  padding:0.875rem 1rem 0.75rem;
+  border-bottom:1px solid var(--border2);
+}
+.q-label { font-size:10px; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink3); margin-bottom:2px; }
+.q-title { font-family:'Playfair Display',serif; font-size:17px; font-weight:400; }
+.qcard.current .q-title { color:var(--rose); }
+
+.qcard-body { padding:0.75rem 1rem; }
+
+.q-item {
+  display:flex; align-items:flex-start; gap:7px;
+  padding:5px 0;
+  border-bottom:1px solid var(--border2);
+  font-size:12px; color:var(--ink2);
+}
+.q-item:last-child { border-bottom:none; }
+.q-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.q-item.done .q-item-text { text-decoration:line-through; opacity:0.45; }
+.q-item-text { flex:1; }
+.q-item-area { font-size:10px; color:var(--ink3); }
+.q-check { font-size:11px; color:var(--border); cursor:pointer; flex-shrink:0; transition:color 0.12s; }
+.q-check:hover { color:var(--ink3); }
+.q-item.done .q-check { color:var(--sage); }
+
+.q-add-row {
+  display:flex; align-items:center; gap:6px;
+  padding:5px 0 2px;
+}
+.q-add-input {
+  flex:1; border:none; outline:none;
+  font-family:'Jost',sans-serif; font-size:12px;
+  color:var(--ink); background:transparent;
+}
+.q-add-input::placeholder { color:var(--ink4); }
+
+/* ADMIN LIST */
+.admin-list { margin-bottom:1.5rem; }
+
+.admin-item {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 1rem;
+  border-bottom:1px solid var(--border2);
+  font-size:13px; color:var(--ink2);
+}
+.admin-item.done { opacity:0.5; }
+.admin-item.done .admin-name { text-decoration:line-through; }
+.admin-name { flex:1; }
+.admin-q { font-size:11px; color:var(--ink3); background:var(--bg); padding:2px 8px; border-radius:20px; flex-shrink:0; }
+
+.acheck {
+  width:17px; height:17px; border-radius:4px;
+  border:1.5px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:9px; color:white; cursor:pointer;
+  transition:all 0.18s; flex-shrink:0;
+}
+.admin-item.done .acheck { background:var(--sage); border-color:transparent; }
+
+/* BUTTONS */
+.btn {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:7px 15px; border-radius:var(--r-sm);
+  font-size:12px; font-weight:500; letter-spacing:0.04em;
+  cursor:pointer; transition:all 0.15s; border:none;
+  font-family:'Jost',sans-serif;
+}
+.btn-dark { background:var(--pistachio); color:white; }
+.btn-dark:hover { background:var(--pistachio-dark); }
+.btn-outline { background:transparent; color:var(--pistachio-dark); border:1px solid var(--pistachio); }
+.btn-outline:hover { background:var(--pistachio-bg); color:var(--pistachio-dark); }
+.btn-rose { background:var(--pistachio); color:white; }
+.btn-rose:hover { background:var(--pistachio-dark); }
+
+/* MISC */
+.save-toast {
+  position:fixed; bottom:1.25rem; right:1.25rem; z-index:300;
+  background:var(--ink); color:white;
+  padding:7px 15px; border-radius:var(--r-sm);
+  font-size:12px; opacity:0; transition:opacity 0.25s; pointer-events:none;
+}
+.save-toast.show { opacity:1; }
+
+.divider { height:1px; background:var(--border); margin:1.25rem 0; }
+.gap { margin-bottom:1.25rem; }
+
+.two-col { display:grid; grid-template-columns:1fr 320px; gap:1.25rem; align-items:start; }
+
+@media(max-width:900px) {
+  .two-col { grid-template-columns:1fr; }
+  .habits-2col { grid-template-columns:1fr; }
+  .quarter-grid { grid-template-columns:1fr 1fr; }
+  .retro-grid { grid-template-columns:1fr; }
+  .nav-tabs { overflow-x:auto; }
+  .view { padding:1rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Glow Up</div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showView('today',this)">Today</div>
+    <div class="nav-tab" onclick="showView('sprint',this)">Sprint</div>
+    <div class="nav-tab" onclick="showView('bigpicture',this)">Big Picture</div>
+    <div class="nav-tab" onclick="showView('settings',this)">Settings</div>
+  </div>
+  <div class="nav-date" id="nav-date"></div>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════
+     TODAY
+══════════════════════════════ -->
+<div class="view active" id="view-today">
+
+  <!-- VISION BOARD -->
+  <div class="vision-board gap" id="vision-board-today">
+    <div class="section-label">Vision Board</div>
+    <div class="vision-board-inner" id="vb-slots-today"></div>
+  </div>
+
+  <!-- OURA -->
+  <div class="oura-row gap" id="oura-row">
+    <div class="oura-pill">
+      <span class="icon">👟</span>
+      <div>
+        <div class="val" id="oura-steps">—</div>
+        <div class="lbl">steps today</div>
+      </div>
+    </div>
+    <div class="oura-pill">
+      <span class="icon">⚖️</span>
+      <div>
+        <div class="val" id="oura-weight">—</div>
+        <div class="lbl" id="oura-weight-lbl">latest weight</div>
+      </div>
+    </div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+      <div id="habit-progress-pill" style="font-size:12px;color:var(--ink3)">0 / 13 habits</div>
+    </div>
+  </div>
+
+  <!-- SPRINT BANNER -->
+  <div class="sprint-banner gap">
+    <div class="sprint-banner-left">
+      <h2 id="today-sprint-label">Sprint 1</h2>
+      <p id="today-sprint-sub">Day 1 of 14 · 13 days left</p>
+    </div>
+    <div class="sprint-stats">
+      <div class="sstat">
+        <div class="snum" id="today-habits-done">0</div>
+        <div class="slbl">Habits</div>
+      </div>
+      <div class="sstat">
+        <div class="snum" id="today-tasks-done">0</div>
+        <div class="slbl">Tasks</div>
+      </div>
+    </div>
+    <div class="sprint-days-ring">
+      <svg width="60" height="60" viewBox="0 0 60 60">
+        <circle cx="30" cy="30" r="24" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3.5"/>
+        <circle id="ring-prog" cx="30" cy="30" r="24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="3.5"
+          stroke-dasharray="150.8" stroke-dashoffset="150.8" stroke-linecap="round"/>
+      </svg>
+      <div class="ring-inner">
+        <div class="rnum" id="ring-day-num">1</div>
+        <div class="rlbl">of 14</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HABITS + TASKS 2-col -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start">
+    <!-- LEFT: ALL DAILY HABITS -->
+    <div>
+      <div class="section-label">Daily Habits</div>
+      <div id="habits-container"></div>
+    </div>
+
+    <!-- RIGHT: SPRINT TASKS -->
+    <div>
+      <div class="section-label">This Sprint's Tasks</div>
+      <div id="sprint-tasks-container"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SPRINT
+══════════════════════════════ -->
+<div class="view" id="view-sprint">
+
+  <!-- VISION BOARD (shared) -->
+  <div class="vision-board gap" id="vision-board-sprint">
+    <div class="section-label">Vision Board</div>
+    <div class="vision-board-inner" id="vb-slots-sprint"></div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px">
+    <div>
+      <div class="page-title" id="sprint-page-title">Sprint 1</div>
+      <div style="font-size:12px;color:var(--ink3);margin-top:2px" id="sprint-page-dates"></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="sprint-mode-toggle">
+        <div class="sprint-mode-btn active" onclick="setSprintMode('plan',this)">Plan</div>
+        <div class="sprint-mode-btn" onclick="setSprintMode('retro',this)">Retro</div>
+      </div>
+      <button class="btn btn-dark" onclick="saveSprintPlan()">Save ↑</button>
+    </div>
+  </div>
+
+  <!-- PLAN MODE -->
+  <div id="sprint-plan-mode">
+    <div id="sprint-plan-areas"></div>
+  </div>
+
+  <!-- RETRO MODE -->
+  <div id="sprint-retro-mode" style="display:none">
+    <div class="retro-section">
+      <div class="retro-sprint-banner">
+        <div>
+          <h3 id="retro-title">Sprint 1 Retrospective</h3>
+          <p id="retro-dates"></p>
+        </div>
+        <div class="retro-pct" id="retro-pct">—%</div>
+      </div>
+
+      <div class="retro-grid">
+        <div class="card">
+          <div class="section-label" style="margin-bottom:10px">Habit completion</div>
+          <div id="retro-habits-list"></div>
+        </div>
+        <div class="card">
+          <div class="section-label" style="margin-bottom:10px">Sprint tasks</div>
+          <div id="retro-tasks-list"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div>
+            <div class="section-label" style="margin-bottom:6px">What went well ✦</div>
+            <textarea class="retro-notes" id="retro-wins" placeholder="Wins from this sprint..."></textarea>
+          </div>
+          <div>
+            <div class="section-label" style="margin-bottom:6px">Level up next sprint</div>
+            <textarea class="retro-notes" id="retro-improve" placeholder="What to adjust..."></textarea>
+          </div>
+        </div>
+        <button class="btn btn-dark" style="margin-top:1rem;width:100%;justify-content:center" onclick="saveRetro()">Save reflection</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     BIG PICTURE
+══════════════════════════════ -->
+<div class="view" id="view-bigpicture">
+  <div style="margin-bottom:1.5rem">
+    <div class="page-title">Big Picture</div>
+    <div style="font-size:12px;color:var(--ink3);margin-top:2px">2025 · Annual & Quarterly</div>
+  </div>
+
+  <div class="quarter-grid" id="quarter-grid"></div>
+
+  <div class="divider"></div>
+
+  <div style="margin-bottom:1rem">
+    <div class="page-title" style="font-size:20px;margin-bottom:4px">Life Admin</div>
+    <div style="font-size:12px;color:var(--ink3);margin-bottom:1rem">One-time tasks, milestones, things not to forget</div>
+  </div>
+
+  <div class="card-flush">
+    <div class="admin-list" id="admin-list"></div>
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 1rem;border-top:1px solid var(--border2)">
+      <span style="font-size:17px;color:var(--ink3)">+</span>
+      <input class="add-task-input" id="admin-new-txt" placeholder="Add life admin item..."
+        onkeydown="if(event.key==='Enter')addAdminItem()">
+      <select id="admin-new-q" style="border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:12px;background:white;color:var(--ink2);outline:none;font-family:'Jost',sans-serif">
+        <option>Q1</option><option>Q2</option><option>Q3</option><option>Q4</option><option>Ongoing</option>
+      </select>
+      <button class="btn btn-outline" style="padding:5px 12px" onclick="addAdminItem()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SETTINGS
+══════════════════════════════ -->
+<div class="view" id="view-settings">
+  <div style="margin-bottom:1.5rem"><div class="page-title">Settings</div></div>
+  <div style="max-width:520px;display:flex;flex-direction:column;gap:1rem">
+    <div class="card">
+      <div class="section-label" style="margin-bottom:12px">Google Sheets</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:12px;color:var(--ink3);margin-bottom:4px">Sheet ID</div>
+          <input id="s-sheet-id" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:'Jost',sans-serif;font-size:13px;outline:none;background:var(--bg);color:var(--ink)" placeholder="Your Google Sheet ID">
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--ink3);margin-bottom:4px">API Key</div>
+          <input id="s-api-key" type="password" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:'Jost',sans-serif;font-size:13px;outline:none;background:var(--bg);color:var(--ink)" placeholder="Google Sheets API key">
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--ink3);margin-bottom:4px">Oura Token</div>
+          <input id="s-oura" type="password" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:'Jost',sans-serif;font-size:13px;outline:none;background:var(--bg);color:var(--ink)" placeholder="Oura personal access token">
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-label" style="margin-bottom:12px">Personal Goals</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:12px;color:var(--ink3);margin-bottom:4px">Goal Weight (lbs)</div>
+          <input id="s-weight-goal" type="number" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:'Jost',sans-serif;font-size:13px;outline:none;background:var(--bg);color:var(--ink)" placeholder="e.g. 135">
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--ink3);margin-bottom:4px">Sprint Start Date</div>
+          <input id="s-sprint-start" type="date" value="2025-03-24" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:'Jost',sans-serif;font-size:13px;outline:none;background:var(--bg);color:var(--ink)">
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-dark" style="width:100%;justify-content:center" onclick="saveSettings()">Save Settings</button>
+    <div style="font-size:12px;color:var(--sage);text-align:center;min-height:18px" id="settings-msg"></div>
+  </div>
+</div>
+
+</main>
+<div class="save-toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CONFIG & CONSTANTS
+// ═══════════════════════════════════════════════
+const CFG = {
+  SHEET_ID: '',
+  API_KEY: '',
+  OURA_TOKEN: '',
+  SPRINT_START: new Date('2025-03-24'), // Monday
+  WEIGHT_GOAL: 0,
+};
+
+const HABITS = [
+  {id:'workout',     name:'Workout',           group:'fitness',  note:'Strength / cardio'},
+  {id:'steps_10k',   name:'10k Steps',          group:'fitness',  note:'Auto from Oura'},
+  {id:'dance_class', name:'Dance Class',        group:'fitness',  note:'1× / week'},
+  {id:'stretch',     name:'Stretch 15 min',     group:'fitness',  note:'2× / week'},
+  {id:'calories',    name:'Under 1800 cal',     group:'fitness',  note:'Log food'},
+  {id:'vitamins',    name:'Vitamins',           group:'fitness',  note:'Daily'},
+  {id:'wake_early',  name:'Wake Up Early',      group:'glowup',   note:'Daily'},
+  {id:'read',        name:'Read 30 min',        group:'glowup',   note:'Daily'},
+  {id:'skincare_am', name:'Skincare AM',        group:'glowup',   note:'Morning'},
+  {id:'skincare_pm', name:'Skincare PM',        group:'glowup',   note:'Evening'},
+  {id:'no_scroll',   name:'No Doom-Scroll',     group:'glowup',   note:'Limit TikTok'},
+  {id:'study',       name:'Study / Certs',      group:'work',     note:'PMP · AWS · CFA'},
+  {id:'post_tiktok', name:'Post TikTok',        group:'tiktok',   note:'3–4× / week'},
+];
+
+const HABIT_GROUPS = {
+  fitness: {name:'Fitness',      color:'var(--fitness)'},
+  glowup:  {name:'Glow Up',      color:'var(--glowup)'},
+  work:    {name:'Work & Skills',color:'var(--work)'},
+  tiktok:  {name:'TikTok',       color:'var(--tiktok)'},
+};
+
+const AREAS = [
+  {id:'fitness',      name:'Fitness',       color:'var(--fitness)'},
+  {id:'glowup',       name:'Glow Up',       color:'var(--glowup)'},
+  {id:'money',        name:'Money',         color:'var(--money)'},
+  {id:'work',         name:'Work & Skills', color:'var(--work)'},
+  {id:'tiktok',       name:'TikTok',        color:'var(--tiktok)'},
+  {id:'relationships',name:'Relationships', color:'var(--rels)'},
+  {id:'admin',        name:'Life Admin',    color:'var(--admin)'},
+];
+
+// Recurring tasks pool — available to schedule in sprints
+const RECURRING_POOL = [
+  {id:'call_mom',         task:'Call mom',                    area:'relationships', freq:'Every 2 weeks (Sat)'},
+  {id:'check_monarch',    task:'Check Monarch spending',      area:'money',         freq:'Every 2 weeks (Sat)'},
+  {id:'invest',           task:'Invest in brokerage',         area:'money',         freq:'Monthly (1st Sat)'},
+  {id:'amex_credits',     task:'Use Amex credits',            area:'money',         freq:'Monthly (1st Sat)'},
+  {id:'usbank_cat',       task:'Pick new US Bank category',   area:'money',         freq:'Quarterly'},
+  {id:'update_resume',    task:'Update resume',               area:'work',          freq:'Quarterly'},
+  {id:'haircut',          task:'Schedule haircut',            area:'glowup',        freq:'Every 3 months'},
+  {id:'fixed_income',     task:'Read Fixed Income Securities',area:'work',          freq:'Weekly'},
+  {id:'log_work',         task:'Log work accomplishments',    area:'work',          freq:'Weekly'},
+  {id:'update_linkedin',  task:'Update LinkedIn',             area:'work',          freq:'Quarterly'},
+  {id:'date_night',       task:'Plan date night',             area:'relationships', freq:'This sprint'},
+  {id:'friend_hangout',   task:'Plan friends hangout',        area:'relationships', freq:'This sprint'},
+  {id:'family_checkin',   task:'Family check-in',             area:'relationships', freq:'This sprint'},
+];
+
+// Saturday auto-tasks (shown when today is Sat)
+const SAT_WEEKLY = [
+  {id:'sat_clean',    task:'Clean apartment',                area:'glowup'},
+  {id:'sat_gym',      task:'Gym ritual (sauna + hair serums)',area:'glowup'},
+  {id:'sat_outfits',  task:'Plan work outfits',              area:'glowup'},
+];
+
+const SAT_MONTHLY_FIRST = [
+  {id:'sat_invest',   task:'Invest in brokerage',            area:'money'},
+  {id:'sat_amex',     task:'Use Amex credits',               area:'money'},
+];
+
+const SAT_BIWEEKLY = [
+  {id:'sat_monarch',  task:'Check Monarch spending',         area:'money'},
+  {id:'sat_mom',      task:'Call mom',                       area:'relationships'},
+];
+
+const QUARTER_DEFAULTS = {
+  Q1:[
+    {text:'File taxes',                     area:'admin',    done:false},
+    {text:'Start PMP study plan',           area:'work',     done:false},
+    {text:'Get driver\'s license',          area:'admin',    done:false},
+    {text:'Establish workout routine',      area:'fitness',  done:false},
+  ],
+  Q2:[
+    {text:'Pass PMP exam',                  area:'work',     done:false},
+    {text:'Book summer trip',               area:'admin',    done:false},
+    {text:'Haircut',                        area:'glowup',   done:false},
+  ],
+  Q3:[
+    {text:'AWS certification exam',         area:'work',     done:false},
+    {text:'Start CFA prep',                 area:'work',     done:false},
+    {text:'Plan fall trip',                 area:'admin',    done:false},
+  ],
+  Q4:[
+    {text:'Year-end financial review',      area:'money',    done:false},
+    {text:'Set goals for next year',        area:'admin',    done:false},
+  ],
+};
+
+const ADMIN_DEFAULTS = [
+  {text:'Get driver\'s license',                    quarter:'Q1',      done:false},
+  {text:'Read Handbook of Fixed Income Securities', quarter:'Q2',      done:false},
+  {text:'Book trips',                               quarter:'Q2',      done:false},
+  {text:'Schedule haircut every 3 months',          quarter:'Ongoing', done:false},
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let todayHabits = {};
+let sprintMode = 'plan';
+let visionPhotos = [null,null,null,null,null]; // 5 slots
+
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+const todayStr = () => new Date().toISOString().split('T')[0];
+const fmtDate  = d => new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+const fmtDateFull = d => new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+const lsGet = (k,fb=null) => { try{const v=localStorage.getItem('gu_'+k);return v?JSON.parse(v):fb;}catch{return fb;} };
+const lsSet = (k,v) => { try{localStorage.setItem('gu_'+k,JSON.stringify(v));}catch{} };
+
+const toast = (msg='Saved ✓') => {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2200);
+};
+
+const getSprint = (offset=0) => {
+  const start = new Date(CFG.SPRINT_START);
+  const now   = new Date();
+  const ms14  = 14*24*60*60*1000;
+  const num   = Math.max(0, Math.floor((now-start)/ms14)) + offset;
+  const spStart = new Date(start.getTime() + num*ms14);
+  const spEnd   = new Date(spStart.getTime() + 13*24*60*60*1000);
+  const day     = Math.max(1,Math.min(14,Math.floor((now-spStart)/(24*60*60*1000))+1));
+  return {num:num+1, start:spStart, end:spEnd, day};
+};
+
+// ═══════════════════════════════════════════════
+// LOAD CONFIG
+// ═══════════════════════════════════════════════
+const loadCfg = () => {
+  const s = lsGet('config',{});
+  if(s.SHEET_ID) CFG.SHEET_ID = s.SHEET_ID;
+  if(s.API_KEY)  CFG.API_KEY  = s.API_KEY;
+  if(s.OURA_TOKEN) CFG.OURA_TOKEN = s.OURA_TOKEN;
+  if(s.WEIGHT_GOAL) CFG.WEIGHT_GOAL = s.WEIGHT_GOAL;
+  if(s.SPRINT_START) CFG.SPRINT_START = new Date(s.SPRINT_START);
+};
+
+// ═══════════════════════════════════════════════
+// VISION BOARD
+// ═══════════════════════════════════════════════
+const renderVisionBoard = () => {
+  visionPhotos = lsGet('vision_photos', [null,null,null,null,null]);
+  ['today','sprint'].forEach(tab => {
+    const cont = document.getElementById(`vb-slots-${tab}`);
+    if(!cont) return;
+    cont.innerHTML = '';
+    for(let i=0;i<5;i++){
+      const slot = document.createElement('div');
+      slot.className = 'vision-slot';
+      slot.dataset.idx = i;
+      if(visionPhotos[i]){
+        slot.innerHTML = `<img src="${visionPhotos[i]}" alt="vision">
+          <div class="remove-photo" onclick="removePhoto(${i},event)">✕</div>`;
+      } else {
+        slot.innerHTML = `<div class="slot-placeholder"><span>＋</span><p>Add photo</p></div>`;
+        slot.onclick = () => triggerPhotoUpload(i);
+      }
+      cont.appendChild(slot);
+    }
+  });
+};
+
+const triggerPhotoUpload = (idx) => {
+  const inp = document.createElement('input');
+  inp.type='file'; inp.accept='image/*';
+  inp.onchange = e => {
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      visionPhotos[idx] = ev.target.result;
+      lsSet('vision_photos', visionPhotos);
+      renderVisionBoard();
+    };
+    reader.readAsDataURL(file);
+  };
+  inp.click();
+};
+
+const removePhoto = (idx, e) => {
+  e.stopPropagation();
+  visionPhotos[idx] = null;
+  lsSet('vision_photos', visionPhotos);
+  renderVisionBoard();
+};
+
+// ═══════════════════════════════════════════════
+// SPRINT BANNER (today view)
+// ═══════════════════════════════════════════════
+const updateSprintBanner = () => {
+  const sp = getSprint();
+  document.getElementById('today-sprint-label').textContent = `Sprint ${sp.num}`;
+  document.getElementById('today-sprint-sub').textContent   = `Day ${sp.day} of 14 · ${14-sp.day} days left`;
+  document.getElementById('ring-day-num').textContent = sp.day;
+  const offset = 150.8 - ((sp.day-1)/13)*150.8;
+  document.getElementById('ring-prog').style.strokeDashoffset = offset;
+};
+
+// ═══════════════════════════════════════════════
+// HABITS
+// ═══════════════════════════════════════════════
+const renderHabits = () => {
+  const groups = {};
+  HABITS.forEach(h => { if(!groups[h.group]) groups[h.group]=[]; groups[h.group].push(h); });
+  const cont = document.getElementById('habits-container');
+  cont.innerHTML = Object.entries(groups).map(([grp,habits]) => {
+    const g = HABIT_GROUPS[grp];
+    const done = habits.filter(h=>todayHabits[h.id]).length;
+    return `<div class="habit-group" style="margin-bottom:8px">
+      <div class="habit-group-head">
+        <div class="hg-name"><div class="hg-dot" style="background:${g.color}"></div>${g.name}</div>
+        <div class="hg-count">${done}/${habits.length}</div>
+      </div>
+      <div class="habit-rows">
+        ${habits.map(h=>`
+          <div class="habit-row ${todayHabits[h.id]?'done':''}" onclick="toggleHabit('${h.id}')">
+            <div class="hcheck">${todayHabits[h.id]?'✓':''}</div>
+            <div class="hname">${h.name}</div>
+            <div class="hnote">${h.note}</div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  const total = HABITS.length;
+  const done  = HABITS.filter(h=>todayHabits[h.id]).length;
+  document.getElementById('habit-progress-pill').textContent = `${done} / ${total} habits`;
+  document.getElementById('today-habits-done').textContent   = done;
+};
+
+const toggleHabit = (id) => {
+  todayHabits[id] = !todayHabits[id];
+  lsSet(`habits_${todayStr()}`, todayHabits);
+  renderHabits();
+};
+
+const loadHabits = () => {
+  todayHabits = lsGet(`habits_${todayStr()}`, {});
+  renderHabits();
+};
+
+// ═══════════════════════════════════════════════
+// SPRINT TASKS
+// ═══════════════════════════════════════════════
+const getSprintTasks = () => {
+  const sp = getSprint();
+  return lsGet(`sprint_tasks_${sp.num}`, []);
+};
+
+const saveSprintTasks = (tasks) => {
+  const sp = getSprint();
+  lsSet(`sprint_tasks_${sp.num}`, tasks);
+};
+
+// Determine which auto tasks are due today (Saturday-based)
+const getAutoTasksForToday = () => {
+  const now = new Date();
+  const dow = now.getDay(); // 0=Sun,6=Sat
+  if(dow !== 6) return [];
+
+  const auto = [];
+  const sp = getSprint();
+  const done = lsGet(`recurring_done`,{});
+
+  // Always on Saturdays
+  SAT_WEEKLY.forEach(t => {
+    const key = `${t.id}_${todayStr()}`;
+    if(!done[key]) auto.push({...t, autoGroup:'weekly', autoKey:key});
+  });
+
+  // First Saturday of month: date 1-7 or 29-31+
+  const d = now.getDate();
+  const isFirstSat = d <= 7 || (d >= 29 && new Date(now.getFullYear(), now.getMonth()+1, 0).getDate() - d <= 2);
+  if(isFirstSat) {
+    SAT_MONTHLY_FIRST.forEach(t => {
+      const lastDone = done[t.id];
+      const monthAgo = new Date(); monthAgo.setMonth(monthAgo.getMonth()-1);
+      if(!lastDone || new Date(lastDone) < monthAgo) {
+        auto.push({...t, autoGroup:'monthly', autoKey:t.id});
+      }
+    });
+  }
+
+  // Biweekly (call mom, check monarch)
+  SAT_BIWEEKLY.forEach(t => {
+    const lastDone = done[t.id];
+    const twoWeeksAgo = new Date(); twoWeeksAgo.setDate(twoWeeksAgo.getDate()-13);
+    if(!lastDone || new Date(lastDone) < twoWeeksAgo) {
+      auto.push({...t, autoGroup:'biweekly', autoKey:t.id});
+    }
+  });
+
+  return auto;
+};
+
+const renderSprintTasks = () => {
+  const tasks   = getSprintTasks();
+  const autoToday = getAutoTasksForToday();
+  const cont    = document.getElementById('sprint-tasks-container');
+  const doneTasks = lsGet('recurring_done',{});
+
+  // Separate done vs pending
+  const pending = tasks.filter(t=>!t.done);
+  const doneArr = tasks.filter(t=>t.done);
+
+  let html = '';
+
+  // Auto tasks for today (Saturday)
+  if(autoToday.length) {
+    const groupLabels = {weekly:'Every Saturday', monthly:'This month', biweekly:'Every 2 weeks'};
+    const grouped = {};
+    autoToday.forEach(t => {
+      if(!grouped[t.autoGroup]) grouped[t.autoGroup]=[];
+      grouped[t.autoGroup].push(t);
+    });
+
+    Object.entries(grouped).forEach(([grp, items]) => {
+      const label = groupLabels[grp]||grp;
+      const area = AREAS.find(a=>a.id===items[0].area);
+      html += `<div class="task-group">
+        <div class="task-group-head">
+          <div class="hg-dot" style="background:${area?.color||'var(--admin)'}"></div>
+          <div class="tg-label">${label}</div>
+          <div class="tg-sub">Today (Saturday)</div>
+        </div>
+        <div class="task-rows">
+          ${items.map(t => {
+            const isDone = doneTasks[t.autoKey];
+            const a = AREAS.find(x=>x.id===t.area);
+            return `<div class="task-row ${isDone?'done':''}" id="auto-${t.autoKey}">
+              <div class="tcheck" onclick="toggleAutoTask('${t.autoKey}')">${isDone?'✓':''}</div>
+              <div class="tarea-dot" style="background:${a?.color||'var(--admin)'}"></div>
+              <div class="tname">${t.task}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    });
+  }
+
+  // Sprint-planned tasks (pending)
+  if(pending.length || tasks.length === 0) {
+    const byArea = {};
+    pending.forEach(t => {
+      if(!byArea[t.area]) byArea[t.area]=[];
+      byArea[t.area].push(t);
+    });
+
+    if(Object.keys(byArea).length) {
+      Object.entries(byArea).forEach(([areaId, items]) => {
+        const area = AREAS.find(a=>a.id===areaId);
+        html += `<div class="task-group">
+          <div class="task-group-head">
+            <div class="hg-dot" style="background:${area?.color||'var(--admin)'}"></div>
+            <div class="tg-label">${area?.name||areaId}</div>
+            <div class="tg-sub">This sprint</div>
+          </div>
+          <div class="task-rows">
+            ${items.map((t,i) => {
+              const allIdx = tasks.indexOf(t);
+              return `<div class="task-row" id="task-${allIdx}">
+                <div class="tcheck" onclick="toggleSprintTask(${allIdx})">${t.done?'✓':''}</div>
+                <div class="tarea-dot" style="background:${area?.color||'var(--admin)'}"></div>
+                <div class="tname">${t.text}</div>
+                ${t.due?`<div class="tdue">${t.due}</div>`:''}
+                <div class="tremove" onclick="removeSprintTask(${allIdx})">✕</div>
+              </div>`;
+            }).join('')}
+          </div>
+          <div class="add-task-row">
+            <span class="add-task-btn" onclick="addTaskInline('${areaId}')">+</span>
+            <input class="add-task-input" id="inline-add-${areaId}" placeholder="Add task to ${area?.name||areaId}..."
+              onkeydown="if(event.key==='Enter')addTaskInline('${areaId}')">
+          </div>
+        </div>`;
+      });
+    }
+  }
+
+  // Global add
+  html += `<div class="task-group">
+    <div class="task-group-head" style="background:transparent;border-bottom:none">
+      <div class="tg-label" style="color:var(--ink3)">Add to this sprint</div>
+    </div>
+    <div class="add-task-row">
+      <span style="font-size:17px;color:var(--ink3)">+</span>
+      <input class="add-task-input" id="global-task-input" placeholder="New task for this sprint...">
+      <select id="global-task-area" style="border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:12px;background:white;color:var(--ink2);outline:none;font-family:'Jost',sans-serif">
+        ${AREAS.map(a=>`<option value="${a.id}">${a.name}</option>`).join('')}
+      </select>
+      <button class="btn btn-outline" style="padding:5px 12px" onclick="addGlobalTask()">Add</button>
+    </div>
+  </div>`;
+
+  // Done tasks (crossed off, at bottom)
+  if(doneArr.length) {
+    html += `<div class="task-group" style="opacity:0.65">
+      <div class="task-group-head">
+        <div class="tg-label">Completed this sprint</div>
+        <div class="tg-sub">${doneArr.length} done</div>
+      </div>
+      <div class="task-rows">
+        ${doneArr.map((t,i) => {
+          const allIdx = tasks.indexOf(t);
+          const area = AREAS.find(a=>a.id===t.area);
+          return `<div class="task-row done">
+            <div class="tcheck" onclick="toggleSprintTask(${allIdx})"  style="background:var(--sage);border-color:transparent">✓</div>
+            <div class="tarea-dot" style="background:${area?.color||'var(--admin)'}"></div>
+            <div class="tname">${t.text}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  cont.innerHTML = html;
+
+  // Update task count in banner
+  const allTasks = tasks.filter(t=>!t.done).length;
+  document.getElementById('today-tasks-done').textContent = tasks.filter(t=>t.done).length;
+};
+
+const toggleSprintTask = (idx) => {
+  const tasks = getSprintTasks();
+  tasks[idx].done = !tasks[idx].done;
+  saveSprintTasks(tasks);
+  renderSprintTasks();
+};
+
+const removeSprintTask = (idx) => {
+  const tasks = getSprintTasks();
+  tasks.splice(idx,1);
+  saveSprintTasks(tasks);
+  renderSprintTasks();
+};
+
+const toggleAutoTask = (key) => {
+  const done = lsGet('recurring_done',{});
+  done[key] = done[key] ? null : new Date().toISOString();
+  if(!done[key]) delete done[key];
+  lsSet('recurring_done', done);
+  renderSprintTasks();
+};
+
+const addTaskInline = (areaId) => {
+  const inp = document.getElementById(`inline-add-${areaId}`);
+  const val = inp?.value.trim(); if(!val) return;
+  const tasks = getSprintTasks();
+  tasks.push({text:val, area:areaId, done:false, due:'', added:new Date().toISOString()});
+  saveSprintTasks(tasks);
+  renderSprintTasks();
+};
+
+const addGlobalTask = () => {
+  const inp  = document.getElementById('global-task-input');
+  const area = document.getElementById('global-task-area').value;
+  const val  = inp.value.trim(); if(!val) return;
+  const tasks = getSprintTasks();
+  tasks.push({text:val, area, done:false, due:'', added:new Date().toISOString()});
+  saveSprintTasks(tasks);
+  inp.value='';
+  renderSprintTasks();
+  toast('Task added ✓');
+};
+
+// ═══════════════════════════════════════════════
+// OURA
+// ═══════════════════════════════════════════════
+const fetchOura = async () => {
+  if(!CFG.OURA_TOKEN) return;
+  const d = todayStr();
+  try {
+    const [actRes] = await Promise.all([
+      fetch(`https://api.ouraring.com/v2/usercollection/daily_activity?start_date=${d}&end_date=${d}`,
+        {headers:{Authorization:`Bearer ${CFG.OURA_TOKEN}`}}),
+    ]);
+    if(actRes.ok){
+      const data = await actRes.json();
+      const steps = data.data?.[0]?.steps;
+      if(steps !== undefined){
+        const el = document.getElementById('oura-steps');
+        el.textContent = steps.toLocaleString();
+        el.className = `val ${steps>=10000?'score-good':steps>=7000?'score-mid':'score-low'}`;
+        if(steps>=10000 && !todayHabits['steps_10k']){
+          todayHabits['steps_10k']=true;
+          lsSet(`habits_${todayStr()}`, todayHabits);
+          renderHabits();
+        }
+      }
+    }
+  } catch{}
+};
+
+// ═══════════════════════════════════════════════
+// WEIGHT
+// ═══════════════════════════════════════════════
+const updateWeight = () => {
+  const log  = lsGet('weight_log',[]);
+  const goal = CFG.WEIGHT_GOAL;
+  const latest = log.length ? log[log.length-1] : null;
+
+  if(latest){
+    document.getElementById('oura-weight').textContent = latest.w;
+    const isToday = latest.date === todayStr();
+    document.getElementById('oura-weight-lbl').textContent = isToday ? 'weight today' : `weight · ${fmtDate(latest.date)}`;
+  }
+};
+
+// ═══════════════════════════════════════════════
+// TIKTOK (habit only — no widget)
+// ═══════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════
+// SPRINT VIEW — PLAN MODE
+// ═══════════════════════════════════════════════
+const renderSprintPlan = () => {
+  const sp    = getSprint();
+  document.getElementById('sprint-page-title').textContent = `Sprint ${sp.num}`;
+  document.getElementById('sprint-page-dates').textContent = `${fmtDate(sp.start)} – ${fmtDate(sp.end)}`;
+
+  const tasks = getSprintTasks();
+  const cont  = document.getElementById('sprint-plan-areas');
+
+  cont.innerHTML = AREAS.map(area => {
+    // Pool items for this area
+    const pool = RECURRING_POOL.filter(p=>p.area===area.id);
+    // Scheduled items for this area
+    const scheduled = tasks.filter(t=>t.area===area.id);
+
+    return `<div class="plan-area-block">
+      <div class="plan-area-head">
+        <div class="plan-area-dot" style="background:${area.color}"></div>
+        <div class="plan-area-name">${area.name}</div>
+      </div>
+      <div class="plan-area-card">
+        ${pool.length ? `
+          <div class="plan-pool">
+            <div class="plan-pool-label">Available to schedule</div>
+            ${pool.map(p => {
+              const isAdded = scheduled.some(s=>s.poolId===p.id);
+              return `<div class="pool-item">
+                <span style="flex:1">${p.task}</span>
+                <span style="font-size:11px;color:var(--ink3);margin-right:8px">${p.freq}</span>
+                <button class="pool-add-btn ${isAdded?'added':''}" onclick="schedulePoolItem('${p.id}','${area.id}')">
+                  ${isAdded ? '✓ Added' : '+ Schedule'}
+                </button>
+              </div>`;
+            }).join('')}
+          </div>` : ''}
+
+        <div class="plan-scheduled">
+          <div class="plan-scheduled-label">Scheduled this sprint</div>
+          <div id="sched-list-${area.id}">
+            ${scheduled.length ? scheduled.map((t,i) => {
+              const allIdx = tasks.indexOf(t);
+              return `<div class="sched-item">
+                <span class="sched-name">${t.text}</span>
+                <input class="sched-due-input" value="${t.due||''}" placeholder="Due date (optional)"
+                  onchange="setTaskDue(${allIdx},this.value)">
+                <span class="sched-remove" onclick="removeSprintTask(${allIdx});renderSprintPlan()">✕</span>
+              </div>`;
+            }).join('') : `<div style="font-size:12px;color:var(--ink3);padding:4px 0">Nothing scheduled yet</div>`}
+          </div>
+        </div>
+
+        <div class="plan-add-new">
+          <span style="font-size:17px;color:var(--ink3)">+</span>
+          <input class="plan-add-input" id="plan-add-${area.id}" placeholder="Add custom task for ${area.name}..."
+            onkeydown="if(event.key==='Enter')addPlanTask('${area.id}')">
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+};
+
+const schedulePoolItem = (poolId, areaId) => {
+  const tasks = getSprintTasks();
+  const exists = tasks.some(t=>t.poolId===poolId);
+  if(exists) { toast('Already scheduled'); return; }
+  const pool  = RECURRING_POOL.find(p=>p.id===poolId);
+  if(!pool) return;
+  tasks.push({text:pool.task, area:areaId, done:false, due:'', poolId, added:new Date().toISOString()});
+  saveSprintTasks(tasks);
+  renderSprintPlan();
+  renderSprintTasks();
+  toast(`"${pool.task}" added to sprint ✓`);
+};
+
+const addPlanTask = (areaId) => {
+  const inp = document.getElementById(`plan-add-${areaId}`);
+  const val = inp?.value.trim(); if(!val) return;
+  const tasks = getSprintTasks();
+  tasks.push({text:val, area:areaId, done:false, due:'', added:new Date().toISOString()});
+  saveSprintTasks(tasks);
+  inp.value='';
+  renderSprintPlan();
+  renderSprintTasks();
+};
+
+const setTaskDue = (idx, val) => {
+  const tasks = getSprintTasks();
+  if(tasks[idx]) { tasks[idx].due = val; saveSprintTasks(tasks); }
+};
+
+const saveSprintPlan = () => { toast('Sprint saved ✓'); };
+
+// ═══════════════════════════════════════════════
+// SPRINT VIEW — RETRO MODE
+// ═══════════════════════════════════════════════
+const renderRetro = (sprintOffset = -1) => {
+  const sp   = getSprint(sprintOffset);
+  document.getElementById('retro-title').textContent = `Sprint ${sp.num} Retrospective`;
+  document.getElementById('retro-dates').textContent = `${fmtDate(sp.start)} – ${fmtDate(sp.end)}`;
+
+  // Calculate habit completion
+  let totalH=0, doneH=0;
+  const habitsByGroup = {};
+
+  for(let d=0;d<14;d++){
+    const dd = new Date(sp.start); dd.setDate(dd.getDate()+d);
+    if(dd > new Date()) break;
+    const dStr = dd.toISOString().split('T')[0];
+    const hData = lsGet(`habits_${dStr}`,{});
+    HABITS.forEach(h=>{
+      totalH++;
+      if(hData[h.id]) doneH++;
+      if(!habitsByGroup[h.group]) habitsByGroup[h.group]={done:0,total:0};
+      habitsByGroup[h.group].total++;
+      if(hData[h.id]) habitsByGroup[h.group].done++;
+    });
+  }
+
+  const pct = totalH>0 ? Math.round((doneH/totalH)*100) : 0;
+  document.getElementById('retro-pct').textContent = pct+'%';
+
+  // Habits breakdown
+  const hList = document.getElementById('retro-habits-list');
+  hList.innerHTML = Object.entries(habitsByGroup).map(([grp,data]) => {
+    const g = HABIT_GROUPS[grp];
+    const p = data.total>0 ? Math.round((data.done/data.total)*100) : 0;
+    return `<div class="retro-habit-row">
+      <div class="hg-dot" style="background:${g.color};flex-shrink:0"></div>
+      <span style="flex:1;font-size:13px;color:var(--ink2)">${g.name}</span>
+      <div class="retro-pct-bar"><div class="retro-pct-fill" style="width:${p}%;background:${g.color}"></div></div>
+      <div class="retro-pct-num">${p}%</div>
+    </div>`;
+  }).join('');
+
+  // Tasks
+  const prevTasks = lsGet(`sprint_tasks_${sp.num}`,[]);
+  const tList = document.getElementById('retro-tasks-list');
+  tList.innerHTML = prevTasks.length ? prevTasks.map(t => {
+    const area = AREAS.find(a=>a.id===t.area);
+    return `<div class="retro-task-row">
+      <div class="retro-check ${t.done?'yes':'no'}">${t.done?'✓':'–'}</div>
+      <div class="tarea-dot" style="background:${area?.color||'var(--admin)'}"></div>
+      <span>${t.text}</span>
+    </div>`;
+  }).join('') : `<div style="font-size:12px;color:var(--ink3)">No tasks were scheduled for this sprint.</div>`;
+
+  // Load saved notes
+  const saved = lsGet(`retro_${sp.num}`,{});
+  document.getElementById('retro-wins').value    = saved.wins    || '';
+  document.getElementById('retro-improve').value = saved.improve || '';
+};
+
+const saveRetro = () => {
+  const sp = getSprint(-1);
+  lsSet(`retro_${sp.num}`,{
+    wins:    document.getElementById('retro-wins').value,
+    improve: document.getElementById('retro-improve').value,
+  });
+  toast('Reflection saved ✓');
+};
+
+const setSprintMode = (mode, el) => {
+  sprintMode = mode;
+  document.querySelectorAll('.sprint-mode-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('sprint-plan-mode').style.display  = mode==='plan'  ? '' : 'none';
+  document.getElementById('sprint-retro-mode').style.display = mode==='retro' ? '' : 'none';
+  if(mode==='retro') renderRetro();
+};
+
+// ═══════════════════════════════════════════════
+// BIG PICTURE
+// ═══════════════════════════════════════════════
+const renderBigPicture = () => {
+  const data = lsGet('big_picture', QUARTER_DEFAULTS);
+  const curQ = Math.ceil((new Date().getMonth()+1)/3);
+  const grid = document.getElementById('quarter-grid');
+
+  grid.innerHTML = ['Q1','Q2','Q3','Q4'].map((q,qi) => {
+    const isCurrent = qi+1 === curQ;
+    const items = data[q] || [];
+    return `<div class="qcard ${isCurrent?'current':''}">
+      <div class="qcard-head">
+        <div class="q-label">${q}</div>
+        <div class="q-title">${isCurrent?'Now ✦':q==='Q1'?'Foundation':q==='Q2'?'Build':q==='Q3'?'Momentum':'Finish'}</div>
+      </div>
+      <div class="qcard-body">
+        ${items.map((item,i) => {
+          const area = AREAS.find(a=>a.id===item.area);
+          return `<div class="q-item ${item.done?'done':''}" id="qi-${q}-${i}">
+            <div class="q-dot" style="background:${area?.color||'var(--admin)'}"></div>
+            <div style="flex:1">
+              <div class="q-item-text">${item.text}</div>
+              <div class="q-item-area">${area?.name||''}</div>
+            </div>
+            <div class="q-check" onclick="toggleQItem('${q}',${i})">${item.done?'✓':'○'}</div>
+          </div>`;
+        }).join('')}
+        <div class="q-add-row">
+          <span style="font-size:15px;color:var(--ink3)">+</span>
+          <input class="q-add-input" id="qadd-${q}" placeholder="Add goal..." onkeydown="if(event.key==='Enter')addQItem('${q}')">
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Admin list
+  const adminItems = lsGet('admin_items', ADMIN_DEFAULTS);
+  const al = document.getElementById('admin-list');
+  al.innerHTML = adminItems.map((item,i) => `
+    <div class="admin-item ${item.done?'done':''}">
+      <div class="acheck" onclick="toggleAdmin(${i})">${item.done?'✓':''}</div>
+      <div class="admin-name">${item.text}</div>
+      <div class="admin-q">${item.quarter}</div>
+    </div>`).join('');
+};
+
+const toggleQItem = (q, i) => {
+  const data = lsGet('big_picture', QUARTER_DEFAULTS);
+  data[q][i].done = !data[q][i].done;
+  lsSet('big_picture', data);
+  renderBigPicture();
+};
+
+const addQItem = (q) => {
+  const inp = document.getElementById(`qadd-${q}`);
+  const val = inp?.value.trim(); if(!val) return;
+  const data = lsGet('big_picture', QUARTER_DEFAULTS);
+  if(!data[q]) data[q]=[];
+  data[q].push({text:val, area:'admin', done:false});
+  lsSet('big_picture', data);
+  inp.value='';
+  renderBigPicture();
+};
+
+const toggleAdmin = (i) => {
+  const items = lsGet('admin_items', ADMIN_DEFAULTS);
+  items[i].done = !items[i].done;
+  lsSet('admin_items', items);
+  renderBigPicture();
+};
+
+const addAdminItem = () => {
+  const inp = document.getElementById('admin-new-txt');
+  const q   = document.getElementById('admin-new-q').value;
+  const val = inp.value.trim(); if(!val) return;
+  const items = lsGet('admin_items', ADMIN_DEFAULTS);
+  items.push({text:val, quarter:q, done:false});
+  lsSet('admin_items', items);
+  inp.value='';
+  renderBigPicture();
+};
+
+// ═══════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════
+const loadSettings = () => {
+  document.getElementById('s-sheet-id').value    = CFG.SHEET_ID||'';
+  document.getElementById('s-api-key').value     = CFG.API_KEY||'';
+  document.getElementById('s-oura').value        = CFG.OURA_TOKEN||'';
+  document.getElementById('s-weight-goal').value = CFG.WEIGHT_GOAL||'';
+  document.getElementById('s-sprint-start').value= CFG.SPRINT_START.toISOString().split('T')[0];
+};
+
+const saveSettings = () => {
+  CFG.SHEET_ID     = document.getElementById('s-sheet-id').value.trim();
+  CFG.API_KEY      = document.getElementById('s-api-key').value.trim();
+  CFG.OURA_TOKEN   = document.getElementById('s-oura').value.trim();
+  CFG.WEIGHT_GOAL  = parseFloat(document.getElementById('s-weight-goal').value)||0;
+  CFG.SPRINT_START = new Date(document.getElementById('s-sprint-start').value);
+  lsSet('config',{
+    SHEET_ID: CFG.SHEET_ID, API_KEY: CFG.API_KEY, OURA_TOKEN: CFG.OURA_TOKEN,
+    WEIGHT_GOAL: CFG.WEIGHT_GOAL, SPRINT_START: CFG.SPRINT_START.toISOString(),
+  });
+  document.getElementById('settings-msg').textContent='Settings saved ✓';
+  setTimeout(()=>document.getElementById('settings-msg').textContent='',2500);
+  updateWeight();
+};
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+const showView = (id, el) => {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(`view-${id}`).classList.add('active');
+  el.classList.add('active');
+  if(id==='sprint')    { renderSprintPlan(); }
+  if(id==='bigpicture'){ renderBigPicture(); }
+  if(id==='settings')  { loadSettings(); }
+};
+
+// ═══════════════════════════════════════════════
+// NAV DATE
+// ═══════════════════════════════════════════════
+const setNavDate = () => {
+  const now = new Date();
+  document.getElementById('nav-date').textContent =
+    now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+};
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+const init = () => {
+  loadCfg();
+  setNavDate();
+  updateSprintBanner();
+  renderVisionBoard();
+  loadHabits();
+  renderSprintTasks();
+  updateWeight();
+  fetchOura();
+};
+
+init();
+</script>
+</body>
+</html>
