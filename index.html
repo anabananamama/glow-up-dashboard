@@ -583,6 +583,42 @@ main { padding-top: 52px; }
 
 .two-col { display:grid; grid-template-columns:1fr 320px; gap:1.25rem; align-items:start; }
 
+.weekly-habit-group {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  overflow:hidden;
+  margin-bottom:8px;
+}
+
+.weekly-habit-row {
+  display:flex; align-items:center; gap:10px;
+  padding: 8px 1rem;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.weekly-habit-row:hover { background: var(--bg); }
+.weekly-habit-row.done { opacity:0.6; }
+.weekly-habit-row.done .hname { text-decoration:line-through; color:var(--ink3); }
+
+.weekly-counter {
+  display:flex; align-items:center; gap:6px;
+  margin-left:auto; flex-shrink:0;
+}
+
+.weekly-pips { display:flex; gap:4px; }
+
+.weekly-pip {
+  width:10px; height:10px; border-radius:50%;
+  border:1.5px solid var(--border);
+  transition: all 0.15s;
+}
+.weekly-pip.filled { border-color:transparent; }
+
+.weekly-count-label {
+  font-size:11px; color:var(--ink3); min-width:28px; text-align:right;
+}
+
 @media(max-width:900px) {
   .two-col { grid-template-columns:1fr; }
   .habits-2col { grid-template-columns:1fr; }
@@ -671,10 +707,17 @@ main { padding-top: 52px; }
 
   <!-- HABITS + TASKS 2-col -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start">
-    <!-- LEFT: ALL DAILY HABITS -->
+    <!-- LEFT: DAILY + WEEKLY HABITS -->
     <div>
-      <div class="section-label">Daily Habits</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="section-label" style="margin-bottom:0">Daily Habits</div>
+        <button class="btn btn-outline" style="padding:3px 10px;font-size:11px" onclick="refreshHabitsFromSheet()">↻ Refresh habits</button>
+      </div>
       <div id="habits-container"></div>
+      <div style="margin-top:1.25rem;margin-bottom:10px">
+        <div class="section-label">Weekly Habits</div>
+      </div>
+      <div id="weekly-habits-container"></div>
     </div>
 
     <!-- RIGHT: SPRINT TASKS -->
@@ -847,20 +890,21 @@ const CFG = {
   WEIGHT_GOAL: 0,
 };
 
-const HABITS = [
-  {id:'workout',     name:'Workout',           group:'fitness',  note:'Strength / cardio'},
-  {id:'steps_10k',   name:'10k Steps',          group:'fitness',  note:'Auto from Oura'},
-  {id:'dance_class', name:'Dance Class',        group:'fitness',  note:'1× / week'},
-  {id:'stretch',     name:'Stretch 15 min',     group:'fitness',  note:'2× / week'},
-  {id:'calories',    name:'Under 1800 cal',     group:'fitness',  note:'Log food'},
-  {id:'vitamins',    name:'Vitamins',           group:'fitness',  note:'Daily'},
-  {id:'wake_early',  name:'Wake Up Early',      group:'glowup',   note:'Daily'},
-  {id:'read',        name:'Read 30 min',        group:'glowup',   note:'Daily'},
-  {id:'skincare_am', name:'Skincare AM',        group:'glowup',   note:'Morning'},
-  {id:'skincare_pm', name:'Skincare PM',        group:'glowup',   note:'Evening'},
-  {id:'no_scroll',   name:'No Doom-Scroll',     group:'glowup',   note:'Limit TikTok'},
-  {id:'study',       name:'Study / Certs',      group:'work',     note:'PMP · AWS · CFA'},
-  {id:'post_tiktok', name:'Post TikTok',        group:'tiktok',   note:'3–4× / week'},
+let HABITS = [
+  {id:'workout',     name:'Workout',           group:'fitness',  frequency:'weekly', target:3, note:'Strength / cardio'},
+  {id:'steps_10k',   name:'10k Steps',          group:'fitness',  frequency:'daily',  target:1, note:'Auto from Oura'},
+  {id:'low_cardio',  name:'Low Intensity Cardio',group:'fitness', frequency:'weekly', target:3, note:'3× / week'},
+  {id:'dance_class', name:'Dance Class',        group:'fitness',  frequency:'weekly', target:1, note:'1× / week'},
+  {id:'stretch',     name:'Stretch 15 min',     group:'fitness',  frequency:'weekly', target:2, note:'2× / week'},
+  {id:'calories',    name:'Under 1800 cal',     group:'fitness',  frequency:'daily',  target:1, note:'Log food'},
+  {id:'vitamins',    name:'Vitamins',           group:'fitness',  frequency:'daily',  target:1, note:'Daily'},
+  {id:'wake_early',  name:'Wake Up Early',      group:'glowup',   frequency:'daily',  target:1, note:'Daily'},
+  {id:'read',        name:'Read 30 min',        group:'glowup',   frequency:'daily',  target:1, note:'Daily'},
+  {id:'skincare_am', name:'Skincare AM',        group:'glowup',   frequency:'daily',  target:1, note:'Morning'},
+  {id:'skincare_pm', name:'Skincare PM',        group:'glowup',   frequency:'daily',  target:1, note:'Evening'},
+  {id:'no_scroll',   name:'No Doom-Scroll',     group:'glowup',   frequency:'daily',  target:1, note:'Limit TikTok'},
+  {id:'study',       name:'Study / Certs',      group:'work',     frequency:'daily',  target:1, note:'PMP · AWS · CFA'},
+  {id:'post_tiktok', name:'Post TikTok',        group:'tiktok',   frequency:'weekly', target:3, note:'3–4× / week'},
 ];
 
 const HABIT_GROUPS = {
@@ -1052,14 +1096,46 @@ const updateSprintBanner = () => {
 };
 
 // ═══════════════════════════════════════════════
-// HABITS
+// HABITS — LOAD FROM SHEETS
 // ═══════════════════════════════════════════════
+const nameToId = name => name.toLowerCase().replace(/[^a-z0-9]/g,'_').replace(/_+/g,'_');
+
+const refreshHabitsFromSheet = async () => {
+  if(!CFG.SHEET_ID || !CFG.API_KEY) { toast('Connect Google Sheets in Settings first'); return; }
+  try {
+    const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CFG.SHEET_ID}/values/habit_definitions!A:E?key=${CFG.API_KEY}`);
+    if(!r.ok) { toast('Could not load habits from Sheet'); return; }
+    const data = await r.json();
+    const rows = data.values || [];
+    if(rows.length < 2) { toast('No habits found in Sheet'); return; }
+    // Skip header row
+    HABITS = rows.slice(1).filter(r=>r[0]).map(r => ({
+      id:        nameToId(r[0]),
+      name:      r[0],
+      group:     (r[1]||'fitness').toLowerCase(),
+      frequency: (r[2]||'daily').toLowerCase(),
+      target:    parseInt(r[3])||1,
+      note:      r[4]||'',
+    }));
+    lsSet('habit_definitions', HABITS);
+    renderHabits();
+    renderWeeklyHabits();
+    toast('Habits updated from Sheet ✓');
+  } catch(e) { toast('Error loading habits'); }
+};
+
+// ═══════════════════════════════════════════════
+// DAILY HABITS
+// ═══════════════════════════════════════════════
+const getDailyHabits = () => HABITS.filter(h => h.frequency === 'daily');
+
 const renderHabits = () => {
+  const daily = getDailyHabits();
   const groups = {};
-  HABITS.forEach(h => { if(!groups[h.group]) groups[h.group]=[]; groups[h.group].push(h); });
+  daily.forEach(h => { if(!groups[h.group]) groups[h.group]=[]; groups[h.group].push(h); });
   const cont = document.getElementById('habits-container');
   cont.innerHTML = Object.entries(groups).map(([grp,habits]) => {
-    const g = HABIT_GROUPS[grp];
+    const g = HABIT_GROUPS[grp] || {name:grp, color:'var(--ink3)'};
     const done = habits.filter(h=>todayHabits[h.id]).length;
     return `<div class="habit-group" style="margin-bottom:8px">
       <div class="habit-group-head">
@@ -1077,9 +1153,9 @@ const renderHabits = () => {
     </div>`;
   }).join('');
 
-  const total = HABITS.length;
-  const done  = HABITS.filter(h=>todayHabits[h.id]).length;
-  document.getElementById('habit-progress-pill').textContent = `${done} / ${total} habits`;
+  const total = daily.length;
+  const done  = daily.filter(h=>todayHabits[h.id]).length;
+  document.getElementById('habit-progress-pill').textContent = `${done} / ${HABITS.length} habits`;
   document.getElementById('today-habits-done').textContent   = done;
 };
 
@@ -1089,9 +1165,84 @@ const toggleHabit = (id) => {
   renderHabits();
 };
 
+// ═══════════════════════════════════════════════
+// WEEKLY HABITS
+// ═══════════════════════════════════════════════
+const getWeeklyHabits = () => HABITS.filter(h => h.frequency === 'weekly');
+
+// Get Monday of current week
+const getWeekStart = () => {
+  const d = new Date();
+  const day = d.getDay();
+  const diff = (day === 0) ? -6 : 1 - day; // Monday
+  const monday = new Date(d);
+  monday.setDate(d.getDate() + diff);
+  return monday.toISOString().split('T')[0];
+};
+
+const getWeeklyCount = (habitId) => {
+  const weekKey = `weekly_${habitId}_${getWeekStart()}`;
+  return lsGet(weekKey, 0);
+};
+
+const incrementWeekly = (habitId, target) => {
+  const weekKey = `weekly_${habitId}_${getWeekStart()}`;
+  const current = lsGet(weekKey, 0);
+  // Toggle: if already at target, reset to 0; otherwise increment
+  const next = current >= target ? 0 : current + 1;
+  lsSet(weekKey, next);
+  renderWeeklyHabits();
+  // Update banner count
+  const weekly = getWeeklyHabits();
+  const doneW = weekly.filter(h => getWeeklyCount(h.id) >= h.target).length;
+  const doneD = getDailyHabits().filter(h=>todayHabits[h.id]).length;
+  document.getElementById('today-habits-done').textContent = doneD + doneW;
+  document.getElementById('habit-progress-pill').textContent = `${doneD + doneW} / ${HABITS.length} habits`;
+};
+
+const renderWeeklyHabits = () => {
+  const weekly = getWeeklyHabits();
+  const groups = {};
+  weekly.forEach(h => { if(!groups[h.group]) groups[h.group]=[]; groups[h.group].push(h); });
+  const cont = document.getElementById('weekly-habits-container');
+  if(!cont) return;
+
+  cont.innerHTML = Object.entries(groups).map(([grp, habits]) => {
+    const g = HABIT_GROUPS[grp] || {name:grp, color:'var(--ink3)'};
+    const done = habits.filter(h => getWeeklyCount(h.id) >= h.target).length;
+    return `<div class="weekly-habit-group">
+      <div class="habit-group-head">
+        <div class="hg-name"><div class="hg-dot" style="background:${g.color}"></div>${g.name}</div>
+        <div class="hg-count">${done}/${habits.length} this week</div>
+      </div>
+      <div class="habit-rows">
+        ${habits.map(h => {
+          const count = getWeeklyCount(h.id);
+          const isDone = count >= h.target;
+          const pips = Array.from({length: h.target}, (_,i) => 
+            `<div class="weekly-pip ${i < count ? 'filled' : ''}" style="${i < count ? `background:${g.color}` : ''}"></div>`
+          ).join('');
+          return `<div class="weekly-habit-row ${isDone?'done':''}" onclick="incrementWeekly('${h.id}',${h.target})">
+            <div class="hcheck" style="${isDone?`background:${g.color};border-color:transparent`:''}">${isDone?'✓':''}</div>
+            <div class="hname">${h.name}</div>
+            <div class="weekly-counter">
+              <div class="weekly-pips">${pips}</div>
+              <div class="weekly-count-label">${count}/${h.target}</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+};
+
 const loadHabits = () => {
+  // Load habit definitions from localStorage (cached from last Sheets refresh)
+  const cached = lsGet('habit_definitions', null);
+  if(cached && cached.length) HABITS = cached;
   todayHabits = lsGet(`habits_${todayStr()}`, {});
   renderHabits();
+  renderWeeklyHabits();
 };
 
 // ═══════════════════════════════════════════════
