@@ -137,14 +137,14 @@ main { padding-top: 52px; }
 .vision-board {
   border: 1.5px dashed var(--border);
   border-radius: var(--r);
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
   background: var(--surface2);
 }
 
 .vision-board-inner {
-  display: flex; gap: 8px; align-items: stretch;
-  min-height: 120px;
+  display: flex; gap: 6px; align-items: stretch;
+  min-height: 100px;
 }
 
 .vision-slot {
@@ -190,16 +190,16 @@ main { padding-top: 52px; }
 
 /* ── OURA STRIP ── */
 .oura-row {
-  display: flex; gap: 10px;
-  margin-bottom: 1.25rem;
+  display: flex; gap: 8px;
+  margin-bottom: 1rem;
 }
 
 .oura-pill {
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 6px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 40px;
-  padding: 6px 14px 6px 10px;
+  padding: 5px 12px 5px 8px;
 }
 
 .oura-pill .icon { font-size:15px; }
@@ -214,8 +214,8 @@ main { padding-top: 52px; }
   display: flex; align-items: center; justify-content: space-between;
   background: var(--pistachio);
   border-radius: var(--r);
-  padding: 1rem 1.5rem;
-  margin-bottom: 1.25rem;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
   color: white;
 }
 
@@ -250,7 +250,7 @@ main { padding-top: 52px; }
 
 .habit-group-head {
   display:flex; align-items:center; justify-content:space-between;
-  padding: 0.75rem 1rem 0.625rem;
+  padding: 0.5rem 1rem 0.4rem;
   border-bottom: 1px solid var(--border2);
 }
 
@@ -266,7 +266,7 @@ main { padding-top: 52px; }
 
 .habit-row {
   display:flex; align-items:center; gap:10px;
-  padding: 7px 1rem;
+  padding: 5px 1rem;
   cursor: pointer;
   transition: background 0.12s;
 }
@@ -299,7 +299,7 @@ main { padding-top: 52px; }
 
 .task-group-head {
   display:flex; align-items:center; gap:8px;
-  padding:0.625rem 1rem;
+  padding:0.4rem 1rem;
   border-bottom:1px solid var(--border2);
   background: var(--surface2);
 }
@@ -311,7 +311,7 @@ main { padding-top: 52px; }
 
 .task-row {
   display:flex; align-items:center; gap:10px;
-  padding: 8px 1rem;
+  padding: 5px 1rem;
   transition: background 0.12s;
 }
 
@@ -507,7 +507,7 @@ main { padding-top: 52px; }
 
 .q-item {
   display:flex; align-items:flex-start; gap:7px;
-  padding:5px 0;
+  padding:4px 0;
   border-bottom:1px solid var(--border2);
   font-size:12px; color:var(--ink2);
 }
@@ -593,7 +593,7 @@ main { padding-top: 52px; }
 
 .weekly-habit-row {
   display:flex; align-items:center; gap:10px;
-  padding: 8px 1rem;
+  padding: 5px 1rem;
   cursor: pointer;
   transition: background 0.12s;
 }
@@ -722,7 +722,10 @@ main { padding-top: 52px; }
 
     <!-- RIGHT: SPRINT TASKS -->
     <div>
-      <div class="section-label">This Sprint's Tasks</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div class="section-label" style="margin-bottom:0">This Sprint's Tasks</div>
+        <button class="btn btn-outline" style="padding:3px 10px;font-size:11px" onclick="refreshSprintTasksFromSheet()">↻ Refresh</button>
+      </div>
       <div id="sprint-tasks-container"></div>
     </div>
   </div>
@@ -801,18 +804,24 @@ main { padding-top: 52px; }
      BIG PICTURE
 ══════════════════════════════ -->
 <div class="view" id="view-bigpicture">
-  <div style="margin-bottom:1.5rem">
-    <div class="page-title">Big Picture</div>
-    <div style="font-size:12px;color:var(--ink3);margin-top:2px">2025 · Annual & Quarterly</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+    <div>
+      <div class="page-title">Big Picture</div>
+      <div style="font-size:12px;color:var(--ink3);margin-top:2px">2025 · Annual & Quarterly</div>
+    </div>
+    <button class="btn btn-outline" style="padding:3px 10px;font-size:11px" onclick="refreshBigPictureFromSheet()">↻ Refresh</button>
   </div>
 
   <div class="quarter-grid" id="quarter-grid"></div>
 
   <div class="divider"></div>
 
-  <div style="margin-bottom:1rem">
-    <div class="page-title" style="font-size:20px;margin-bottom:4px">Life Admin</div>
-    <div style="font-size:12px;color:var(--ink3);margin-bottom:1rem">One-time tasks, milestones, things not to forget</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem">
+    <div>
+      <div class="page-title" style="font-size:20px;margin-bottom:2px">Life Admin</div>
+      <div style="font-size:12px;color:var(--ink3)">One-time tasks, milestones, things not to forget</div>
+    </div>
+    <button class="btn btn-outline" style="padding:3px 10px;font-size:11px" onclick="refreshAdminFromSheet()">↻ Refresh</button>
   </div>
 
   <div class="card-flush">
@@ -1253,9 +1262,40 @@ const getSprintTasks = () => {
   return lsGet(`sprint_tasks_${sp.num}`, []);
 };
 
-const saveSprintTasks = (tasks) => {
+const saveSprintTasks = async (tasks) => {
   const sp = getSprint();
   lsSet(`sprint_tasks_${sp.num}`, tasks);
+  if(!CFG.SHEET_ID || !CFG.API_KEY) return;
+  // Write all tasks for this sprint to sheet
+  try {
+    // Clear existing rows for this sprint then rewrite
+    const rows = tasks.map(t => [sp.num, t.area, t.text, t.done?'done':'pending', t.due||'', t.notes||'']);
+    if(!rows.length) return;
+    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CFG.SHEET_ID}/values/sprint_goals!A:F:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS&key=${CFG.API_KEY}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({range:'sprint_goals!A:F', majorDimension:'ROWS', values:rows})
+    });
+  } catch(e){}
+};
+
+const loadSprintTasksFromSheet = async () => {
+  if(!CFG.SHEET_ID || !CFG.API_KEY) return;
+  const sp = getSprint();
+  try {
+    const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CFG.SHEET_ID}/values/sprint_goals!A:F?key=${CFG.API_KEY}`);
+    if(!r.ok) return;
+    const data = await r.json();
+    const rows = (data.values||[]).slice(1);
+    const sprintRows = rows.filter(r => String(r[0]) === String(sp.num));
+    if(!sprintRows.length) return;
+    const tasks = sprintRows.map(r => ({
+      text: r[2]||'', area: r[1]||'admin',
+      done: (r[3]||'').toLowerCase()==='done',
+      due: r[4]||'', notes: r[5]||'',
+      added: new Date().toISOString()
+    }));
+    lsSet(`sprint_tasks_${sp.num}`, tasks);
+  } catch(e){}
 };
 
 // Determine which auto tasks are due today (Saturday-based)
@@ -1426,17 +1466,17 @@ const renderSprintTasks = () => {
   document.getElementById('today-tasks-done').textContent = tasks.filter(t=>t.done).length;
 };
 
-const toggleSprintTask = (idx) => {
+const toggleSprintTask = async (idx) => {
   const tasks = getSprintTasks();
   tasks[idx].done = !tasks[idx].done;
-  saveSprintTasks(tasks);
+  await saveSprintTasks(tasks);
   renderSprintTasks();
 };
 
-const removeSprintTask = (idx) => {
+const removeSprintTask = async (idx) => {
   const tasks = getSprintTasks();
   tasks.splice(idx,1);
-  saveSprintTasks(tasks);
+  await saveSprintTasks(tasks);
   renderSprintTasks();
 };
 
@@ -1448,22 +1488,22 @@ const toggleAutoTask = (key) => {
   renderSprintTasks();
 };
 
-const addTaskInline = (areaId) => {
+const addTaskInline = async (areaId) => {
   const inp = document.getElementById(`inline-add-${areaId}`);
   const val = inp?.value.trim(); if(!val) return;
   const tasks = getSprintTasks();
   tasks.push({text:val, area:areaId, done:false, due:'', added:new Date().toISOString()});
-  saveSprintTasks(tasks);
+  await saveSprintTasks(tasks);
   renderSprintTasks();
 };
 
-const addGlobalTask = () => {
+const addGlobalTask = async () => {
   const inp  = document.getElementById('global-task-input');
   const area = document.getElementById('global-task-area').value;
   const val  = inp.value.trim(); if(!val) return;
   const tasks = getSprintTasks();
   tasks.push({text:val, area, done:false, due:'', added:new Date().toISOString()});
-  saveSprintTasks(tasks);
+  await saveSprintTasks(tasks);
   inp.value='';
   renderSprintTasks();
   toast('Task added ✓');
@@ -1716,6 +1756,67 @@ const setSprintMode = (mode, el) => {
 // ═══════════════════════════════════════════════
 // BIG PICTURE
 // ═══════════════════════════════════════════════
+const loadBigPictureFromSheet = async () => {
+  if(!CFG.SHEET_ID || !CFG.API_KEY) return;
+  try {
+    const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CFG.SHEET_ID}/values/big_picture!A:E?key=${CFG.API_KEY}`);
+    if(!r.ok) return;
+    const data = await r.json();
+    const rows = (data.values||[]).slice(1).filter(r=>r[0]);
+    const bp = {Q1:[],Q2:[],Q3:[],Q4:[]};
+    rows.forEach(r => {
+      const q = (r[2]||'Q1').trim();
+      if(bp[q]) bp[q].push({text:r[0], area:r[1]||'admin', done:(r[3]||'').toLowerCase()==='done', notes:r[4]||''});
+    });
+    lsSet('big_picture', bp);
+  } catch(e){}
+};
+
+const saveBigPictureToSheet = async () => {
+  if(!CFG.SHEET_ID || !CFG.API_KEY) return;
+  const data = lsGet('big_picture', QUARTER_DEFAULTS);
+  const rows = [];
+  ['Q1','Q2','Q3','Q4'].forEach(q => {
+    (data[q]||[]).forEach(item => {
+      rows.push([item.text, item.area||'admin', q, item.done?'done':'pending', item.notes||'']);
+    });
+  });
+  if(!rows.length) return;
+  try {
+    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CFG.SHEET_ID}/values/big_picture!A:E:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS&key=${CFG.API_KEY}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({range:'big_picture!A:E', majorDimension:'ROWS', values:rows})
+    });
+  } catch(e){}
+};
+
+const loadAdminFromSheet = async () => {
+  if(!CFG.SHEET_ID || !CFG.API_KEY) return;
+  try {
+    const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CFG.SHEET_ID}/values/life_admin!A:D?key=${CFG.API_KEY}`);
+    if(!r.ok) return;
+    const data = await r.json();
+    const rows = (data.values||[]).slice(1).filter(r=>r[0]);
+    const items = rows.map(r => ({
+      text: r[0], quarter: r[1]||'Q1',
+      done: (r[2]||'').toLowerCase()==='done',
+      notes: r[3]||''
+    }));
+    lsSet('admin_items', items);
+  } catch(e){}
+};
+
+const saveAdminToSheet = async (items) => {
+  if(!CFG.SHEET_ID || !CFG.API_KEY) return;
+  try {
+    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CFG.SHEET_ID}/values/life_admin!A:D:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS&key=${CFG.API_KEY}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({range:'life_admin!A:D', majorDimension:'ROWS',
+        values: items.map(i=>[i.text, i.quarter, i.done?'done':'pending', i.notes||''])})
+    });
+  } catch(e){}
+};
+
 const renderBigPicture = () => {
   const data = lsGet('big_picture', QUARTER_DEFAULTS);
   const curQ = Math.ceil((new Date().getMonth()+1)/3);
@@ -1749,9 +1850,13 @@ const renderBigPicture = () => {
     </div>`;
   }).join('');
 
-  // Admin list
+  renderAdminList();
+};
+
+const renderAdminList = () => {
   const adminItems = lsGet('admin_items', ADMIN_DEFAULTS);
   const al = document.getElementById('admin-list');
+  if(!al) return;
   al.innerHTML = adminItems.map((item,i) => `
     <div class="admin-item ${item.done?'done':''}">
       <div class="acheck" onclick="toggleAdmin(${i})">${item.done?'✓':''}</div>
@@ -1760,14 +1865,15 @@ const renderBigPicture = () => {
     </div>`).join('');
 };
 
-const toggleQItem = (q, i) => {
+const toggleQItem = async (q, i) => {
   const data = lsGet('big_picture', QUARTER_DEFAULTS);
   data[q][i].done = !data[q][i].done;
   lsSet('big_picture', data);
   renderBigPicture();
+  await saveBigPictureToSheet();
 };
 
-const addQItem = (q) => {
+const addQItem = async (q) => {
   const inp = document.getElementById(`qadd-${q}`);
   const val = inp?.value.trim(); if(!val) return;
   const data = lsGet('big_picture', QUARTER_DEFAULTS);
@@ -1776,16 +1882,18 @@ const addQItem = (q) => {
   lsSet('big_picture', data);
   inp.value='';
   renderBigPicture();
+  await saveBigPictureToSheet();
+  toast('Added ✓');
 };
 
-const toggleAdmin = (i) => {
+const toggleAdmin = async (i) => {
   const items = lsGet('admin_items', ADMIN_DEFAULTS);
   items[i].done = !items[i].done;
   lsSet('admin_items', items);
-  renderBigPicture();
+  renderAdminList();
 };
 
-const addAdminItem = () => {
+const addAdminItem = async () => {
   const inp = document.getElementById('admin-new-txt');
   const q   = document.getElementById('admin-new-q').value;
   const val = inp.value.trim(); if(!val) return;
@@ -1793,12 +1901,31 @@ const addAdminItem = () => {
   items.push({text:val, quarter:q, done:false});
   lsSet('admin_items', items);
   inp.value='';
-  renderBigPicture();
+  renderAdminList();
+  await saveAdminToSheet([{text:val, quarter:q, done:false}]);
+  toast('Added ✓');
 };
 
-// ═══════════════════════════════════════════════
-// SETTINGS
-// ═══════════════════════════════════════════════
+const refreshBigPictureFromSheet = async () => {
+  toast('Loading from Sheet...');
+  await loadBigPictureFromSheet();
+  renderBigPicture();
+  toast('Big Picture updated ✓');
+};
+
+const refreshAdminFromSheet = async () => {
+  toast('Loading from Sheet...');
+  await loadAdminFromSheet();
+  renderAdminList();
+  toast('Life Admin updated ✓');
+};
+
+const refreshSprintTasksFromSheet = async () => {
+  toast('Loading from Sheet...');
+  await loadSprintTasksFromSheet();
+  renderSprintTasks();
+  toast('Sprint tasks updated ✓');
+};
 const loadSettings = () => {
   document.getElementById('s-sheet-id').value    = CFG.SHEET_ID||'';
   document.getElementById('s-api-key').value     = CFG.API_KEY||'';
@@ -1850,7 +1977,7 @@ const setNavDate = () => {
 // ═══════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════
-const init = () => {
+const init = async () => {
   loadCfg();
   setNavDate();
   updateSprintBanner();
@@ -1859,6 +1986,12 @@ const init = () => {
   renderSprintTasks();
   updateWeight();
   fetchOura();
+  // Load from Sheets in background (uses cached data immediately, updates silently)
+  if(CFG.SHEET_ID && CFG.API_KEY) {
+    loadSprintTasksFromSheet().then(() => renderSprintTasks());
+    loadBigPictureFromSheet().then(() => {});
+    loadAdminFromSheet().then(() => {});
+  }
 };
 
 init();
